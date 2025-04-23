@@ -77,7 +77,10 @@ async def generate_report(request: QueryRequest):
     query = request.query
     
     # Step 1: Check if the query is a general question (skip report search)
-    if "who is president" in query.lower():  # Example of a generic question
+    is_general_query = not any(report_name.lower() in query.lower() for report_name, _, _ in report_data)
+    
+    if is_general_query:
+        # Handle general questions directly with LLM
         llm_response = process_query_with_llm(query)
         return ReportResponse(
             status="200",
